@@ -1,0 +1,16 @@
+apiVersion: chaos-mesh.org/v1alpha1
+kind: NetworkChaos
+metadata:
+  name: latencia-negocio
+  namespace: default
+spec:
+  action: delay
+  mode: all
+  selector:
+    labelSelectors:
+      app: negocio-api
+  delay:
+    latency: "600ms"
+    correlation: "0"
+    jitter: "0ms"
+  duration: "60s"

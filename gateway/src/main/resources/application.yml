@@ -1,0 +1,33 @@
+server:
+  port: 8080 # Porta padrão para o gateway. As requisições externas chegam aqui.
+
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: negocio_route
+          uri: ${NEGOCIO_API_URL:http://localhost:8081}
+          predicates:
+            - Path=/api/pedidos/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: negocioCircuitBreaker
+                fallbackUri: forward:/fallback/negocioService
+
+# Configuração do Resilience4J (Circuit Breaker)
+resilience4j:
+  circuitbreaker:
+    instances:
+      negocioCircuitBreaker:
+        registerHealthIndicator: true
+        slidingWindowType: COUNT_BASED
+        slidingWindowSize: 10 # Número de requisições para analisar
+        failureRateThreshold: 50 # 50% de falha para abrir o circuito
+        waitDurationInOpenState: 10s # Tempo que o circuito fica aberto
+        permittedNumberOfCallsInHalfOpenState: 3 # Chamadas permitidas no estado semi-aberto
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+  timelimiter:
+    instances:
+      negocioCircuitBreaker:
+        timeoutDuration: 3s # Timeout de 3 segundos para a chamada
