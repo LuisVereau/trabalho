@@ -10,7 +10,7 @@ spec:
     labelSelectors:
       app: negocio-api
   delay:
-    latency: "600ms"
+    latency: "1000ms"
     correlation: "0"
     jitter: "0ms"
   duration: "60s"

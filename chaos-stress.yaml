@@ -10,6 +10,6 @@ spec:
       app: negocio-api
   stressors:
     cpu:
-      workers: 6
+      workers: 8
       load: 100
   duration: "60s"
